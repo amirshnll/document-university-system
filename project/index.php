@@ -2,6 +2,9 @@
 	@session_start();
 	if( isset($_SESSION['login']) && isset($_SESSION['user_type']) && isset($_SESSION['user_id']) )
 		header("location:panel.php");
+
+	require_once('system/functions.php');
+	insert_view();
 ?>
 
 <!DOCTYPE html>

@@ -2,12 +2,15 @@
 	@session_start();
 	if( !isset($_SESSION['login']) || !isset($_SESSION['user_type']) || !isset($_SESSION['user_id']) )
 		header("location:index.php");
+
+	require_once('system/functions.php');
+	insert_view();
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-	<title>صفحه اصلی | انتخاب بخش</title>
+	<title>پنل - پیشخوان</title>
 	<link rel="stylesheet" type="text/css" href="assets/css/layout.css">
 	<link rel="stylesheet" type="text/css" href="assets/bootstrap/css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" href="assets/bootstrap/css/bootstrap-grid.min.css">
