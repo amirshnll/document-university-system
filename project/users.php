@@ -29,6 +29,34 @@
 	}
 	else
 		$type = "اساتید";
+
+
+	$error = -1;
+	$success = -1;
+	if( isset($_POST['username']) && isset($_POST['password']) && isset($_POST['roll']) )
+	{
+		if( !empty($_POST['username']) && !empty($_POST['password']) )
+		{
+			$username = ltrim(rtrim($_POST['username']));
+			$password = ltrim(rtrim(md5($_POST['password'])));
+			$roll = ltrim(rtrim($_POST['roll']));
+
+			if($roll < 1 || $roll > 2)
+				$roll = 1;
+
+			if(add_user($username, $password, $roll) === 1)
+				$success = "عملیات موفق";
+			else
+				$error = "عملیات ناموفق";
+		}
+		else
+		{
+			$error = "عملیات ناموفق";
+		}
+	}
+
+	$all_users = all_users();
+
 ?>
 
 <body style="background: url(assets/img/<?php echo $background; ?>) no-repeat center; background-size: cover; background-attachment: fixed;">
@@ -71,6 +99,63 @@
 					</div>
 					<div class="float-left col-8 mypanel-content bg-light text-right">
 						<h2>مدیریت کاربران</h2>
+						<form action="" method="post">
+							<table width="100%" class="form-group">
+								<tr>
+									<td width="20%"><label for="username">نام کاربری</label></td>
+									<td width="80%"><input type="text" name="username" id="username" class="form-control" /></td>
+								</tr>
+								<tr>
+									<td width="20%"><label for="password">رمزعبور</label></td>
+									<td width="80%"><input type="password" name="password" id="password" class="form-control" /></td>
+								</tr>
+								<tr>
+									<td width="20%"><label for="">نقش کاربری</label></td>
+									<td width="80%"><select class="form-control" name="roll"><option value="1">استاد</option><option value="2">مدیر</option></select></td>
+								</tr>
+								<tr>
+									<td colspan="2"><input type="submit" name="submit" value="ثبت" class="btn btn-success float-left" /></td>
+								</tr>
+							</table>
+							<div class="clearfix"></div>
+						</form>
+						<?php
+							if($error !== -1)
+								echo '<p class="alert alert-danger text-right">' . $error . '</p>';
+							if($success !== -1)
+								echo '<p class="alert alert-success text-right">' . $success . '</p>';
+						?>
+						<br /><br />
+						<h3>لیست کاربران</h3>
+						<table width="100%" class="table table-striped text-center">
+							<thead>
+								<tr>
+								<th width="10%">#</th>
+								<th width="30%">نام کاربری</th>
+								<th width="30%">رمزعبور</th>
+								<th width="20%">نقش</th>
+								<th width="10%">عملیات</th>
+							</tr>
+							</thead>
+							<tbody style="font-size: 11px;">
+								<?php
+									if($all_users === -1)
+										echo "<tr><td colspan='5'>هیچ کاربری موجود نیست</td></tr>";
+									else
+									{
+										$i = 1;
+										foreach ($all_users as $users) {
+											if($users['type'] == 1)
+												$users['type'] = "استاد";
+											elseif($users['type'] == 2)
+												$users['type'] = "مدیر";
+											echo "<tr><td>" . $i . "</td><td>" . $users['username'] . "</td><td>" . $users['password'] . "</td><td>" . $users['type'] . "</td><td><a href='delete-user.php?id=" . $users['id'] . "' class='text-danger' title='حذف کاربر'>✖</a></td></tr>";
+											$i++;
+										}
+									}
+								?>
+							</tbody>
+						</table>
 					</div>
 				</div>
 				<div class="clearfix"></div>

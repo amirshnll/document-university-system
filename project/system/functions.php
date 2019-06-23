@@ -126,4 +126,62 @@
 		}
 	}
 
+	function add_user($username, $password, $roll)
+	{
+		$connect = connect();
+		$query = "INSERT INTO `tbl_user`(`username`, `password`, `register_time`, `type`, `status`) VALUES ('" . $username . "','" . $password . "','" . time() . "','" . $roll . "','1')";
+		mysqli_query($connect, $query);
+
+		$query = "SELECT `id` FROM `tbl_user` WHERE `username` = '" . $username . "'";
+		$result = mysqli_query($connect, $query);
+
+		if($result->num_rows==0)
+			return -1;
+		else
+		{
+			$result = mysqli_fetch_array($result);
+			$user_id = $result['id'];
+		}
+
+		$query = "INSERT INTO `tbl_person`(`user_id`, `first_name`, `last_name`, `national_code`, `mobile`, `phone`, `address`, `personely_code`) VALUES ('" . $user_id . "','','','','','','','')";
+		mysqli_query($connect, $query);
+
+		return 1;
+	}
+
+	function all_users()
+	{
+		$connect = connect();
+		$query = "SELECT * FROM `tbl_user` WHERE `status`='1'";
+		$result = mysqli_query($connect, $query);
+		return $result;
+	}
+
+	function delete_user($id)
+	{
+		$connect = connect();
+		$query = "UPDATE `tbl_user` SET `status`='0' WHERE `id` = '" . $id . "'";
+		$result = mysqli_query($connect, $query);
+		return $result;
+	}
+
+	function load_person($user_id)
+	{
+		$connect = connect();
+		$query = "SELECT * FROM `tbl_person` WHERE `user_id` = '" . $user_id . "'";
+		$result = mysqli_query($connect, $query);
+		$result = mysqli_fetch_array($result);
+		return $result;
+	}
+
+	function update_person($user_id,$first_name, $last_name, $national_code, $mobile, $phone, $personely_code, $address)
+	{
+			$connect = connect();
+			$query = "UPDATE `tbl_person` SET `first_name`='" . $first_name . "',`last_name`='" . $last_name . "',`national_code`='" . $national_code . "',`mobile`='" . $mobile . "',`phone`='" . $phone . "',`personely_code`='" . $personely_code . "',`address`='" . $address . "' WHERE `user_id` = '" . $user_id . "'";
+			if(mysqli_query($connect, $query))
+				return 1;
+			else
+				return -1;
+	}
+
 ?>
