@@ -199,4 +199,38 @@
 		return $result;
 	}
 
+	function load_documents()
+	{
+		$connect = connect();
+		$query = "SELECT `tbl_document`.`id`, `tbl_document`.`file_name`, `tbl_document`.`status`, `tbl_document`.`admin_review`, `tbl_user`.`username` FROM `tbl_document` LEFT JOIN `tbl_user` ON `tbl_document`.`user_id` = `tbl_user`.`id` WHERE `tbl_user`.`status` = 1";
+		$result = mysqli_query($connect, $query);
+		return $result;
+	}
+
+	function single_review($id)
+	{
+		$connect = connect();
+		$query = "SELECT * FROM `tbl_document` WHERE `id` = '" . $id . "'";
+		$result = mysqli_query($connect, $query);
+		$result = mysqli_fetch_array($result);
+		return $result['admin_review'];
+	}
+
+	function single_document($id)
+	{
+		$connect = connect();
+		$query = "SELECT * FROM `tbl_document` WHERE `id` = '" . $id . "'";
+		$result = mysqli_query($connect, $query);
+		$result = mysqli_fetch_array($result);
+		return $result['file_name'];
+	}
+
+	function set_review($id, $review)
+	{
+		$connect = connect();
+		$query = "UPDATE `tbl_document` SET `admin_review`='" . $review . "', `status`='2' WHERE `id` = '" . $id . "'";
+		$result = mysqli_query($connect, $query);
+		return 1;
+	}
+
 ?>

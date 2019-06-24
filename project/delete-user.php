@@ -11,6 +11,6 @@
 		delete_user($_GET['id']);
 	}
 
-	header("location:users.php")
+	header("location:users.php");
 
 ?>

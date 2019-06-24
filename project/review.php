@@ -4,13 +4,39 @@
 		header("location:index.php");
 
 	require_once('system/functions.php');
-	insert_view();
-?>
+	
+	if(isset($_GET['id']) && is_numeric($_GET['id']))
+		$_GET['id'] = ltrim(rtrim($_GET['id']));
+	else
+		header("location:users-document.php");
 
+	$error = -1;
+	$success = -1;
+	if( isset($_POST['admin_review']) )
+	{
+		if( !empty($_POST['admin_review']) )
+		{
+			$admin_review = ltrim(rtrim($_POST['admin_review']));
+
+			if(set_review($_GET['id'], $admin_review) === 1)
+				$success = "عملیات موفق";
+			else
+				$error = "عملیات ناموفق";
+		}
+		else
+		{
+			$error = "عملیات ناموفق";
+		}
+	}
+
+	$review = single_review($_GET['id']);
+	$file_name = single_document($_GET['id']);
+	
+?>
 <!DOCTYPE html>
 <html>
 <head>
-	<title>پنل - مدارک</title>
+	<title>پنل - ثبت نظر </title>
 	<link rel="stylesheet" type="text/css" href="assets/css/layout.css">
 	<link rel="stylesheet" type="text/css" href="assets/bootstrap/css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" href="assets/bootstrap/css/bootstrap-grid.min.css">
@@ -29,9 +55,6 @@
 	}
 	else
 		$type = "اساتید";
-
-	$all_documents = load_documents();
-
 ?>
 
 <body style="background: url(assets/img/<?php echo $background; ?>) no-repeat center; background-size: cover; background-attachment: fixed;">
@@ -73,41 +96,23 @@
 						</nav>
 					</div>
 					<div class="float-left col-8 mypanel-content bg-light text-right">
-						<h2>مدارک</h2>
-						<table width="100%" class="table table-striped text-center">
-							<thead>
-								<tr>
-								<th width="10%">#</th>
-								<th width="15%">نام کاربری</th>
-								<th width="20%">نام فایل</th>
-								<th width="10%">وضعیت</th>
-								<th width="30%">نظر مدیر</th>
-								<th width="10%">عملیات</th>
-							</tr>
-							</thead>
-							<tbody style="font-size: 11px;">
-								<?php
-									if($all_documents === -1)
-										echo "<tr><td colspan='6'>هیچ کاربری موجود نیست</td></tr>";
-									else
-									{
-										$i = 1;
-										foreach ($all_documents as $document) {
-											if($document['status'] == 1)
-												$document['status'] = "آپلود اولیه";
-											elseif($document['status'] == 2)
-												$document['status'] = "بررسی شده";
-
-											if(empty($document['admin_review']))
-												$document['admin_review'] = "هنوز نظری نسبت به این سند وارد نشده است.";
-
-											echo "<tr><td>" . $i . "</td><td>" . $document['username'] . "</td><td>" . $document['file_name'] . "</td><td>" . $document['status'] . "</td><td>" . $document['admin_review'] . "</td><td><a target='_blank' href='upload/" . $document['file_name'] . "' class='text-primary' title='مشاهده سند'>☼</a>&nbsp; <a href='review.php?id=" . $document['id'] . "' class='text-success' title='ثبت نظر'>⚖</a></td></tr>";
-											$i++;
-										}
-									}
-								?>
-							</tbody>
-						</table>
+						<h2>ثبت نظر</h2>
+						<p>ثبت نظر برای فایل ( <a target="_blank" href="<?php echo $file_name; ?>" title="مشاهده فایل"><?php echo $file_name; ?></a> )</p>
+						<form action="" method="post" class="form-group">
+							<input type="hidden" name="id" value="<?php echo $_GET['id']; ?>" />
+							<textarea name="admin_review" maxlength="255" class="form-control" rows="5"><?php echo $review; ?></textarea>
+							<br />
+							<input type="submit" name="submit" value="ثبت" class="btn btn-success float-left" />
+							<span class="float-left">&nbsp;</span>
+							<a href="users-document.php" class="btn btn-danger float-left" title="بازگشت">بازگشت</a>
+							<div class="clearfix"></div>
+						</form>
+						<?php
+							if($error !== -1)
+								echo '<p class="alert alert-danger text-right">' . $error . '</p>';
+							if($success !== -1)
+								echo '<p class="alert alert-success text-right">' . $success . '</p>';
+						?>
 					</div>
 				</div>
 				<div class="clearfix"></div>
