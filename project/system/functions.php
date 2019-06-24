@@ -184,4 +184,19 @@
 				return -1;
 	}
 
+	function insert_document($user_id, $file_name, $type)
+	{
+		$connect = connect();
+		$query = "INSERT INTO `tbl_document`(`user_id`, `file_name`, `status`, `upload_time`, `type`, `user_agent`, `admin_review`) VALUES ('" . $user_id . "', '" . $file_name . "', '1', '" . time() . "', '" . $type . "', '" . $_SERVER['HTTP_USER_AGENT'] . " / ip : " . $_SERVER['REMOTE_ADDR'] . "', '')";
+		mysqli_query($connect, $query);
+	}
+
+	function load_user_documents($user_id)
+	{
+		$connect = connect();
+		$query = "SELECT * FROM `tbl_document` WHERE `user_id` = '" . $user_id . "'";
+		$result = mysqli_query($connect, $query);
+		return $result;
+	}
+
 ?>

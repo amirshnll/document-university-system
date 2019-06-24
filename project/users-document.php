@@ -71,6 +71,7 @@
 					</div>
 					<div class="float-left col-8 mypanel-content bg-light text-right">
 						<h2>مدارک</h2>
+						
 					</div>
 				</div>
 				<div class="clearfix"></div>

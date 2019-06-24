@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 23, 2019 at 07:42 PM
+-- Generation Time: Jun 24, 2019 at 06:11 AM
 -- Server version: 10.1.39-MariaDB
 -- PHP Version: 7.3.5
 
@@ -36,7 +36,6 @@ CREATE TABLE `tbl_document` (
   `upload_time` int(11) NOT NULL,
   `type` int(11) NOT NULL,
   `user_agent` text COLLATE utf8_persian_ci NOT NULL,
-  `description` int(11) NOT NULL,
   `admin_review` varchar(255) COLLATE utf8_persian_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_persian_ci;
 

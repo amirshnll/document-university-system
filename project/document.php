@@ -29,6 +29,8 @@
 	}
 	else
 		$type = "اساتید";
+
+	$all_documents = load_user_documents($_SESSION['user_id']);
 ?>
 
 <body style="background: url(assets/img/<?php echo $background; ?>) no-repeat center; background-size: cover; background-attachment: fixed;">
@@ -71,6 +73,39 @@
 					</div>
 					<div class="float-left col-8 mypanel-content bg-light text-right">
 						<h2>بررسی مدارک</h2>
+						<table width="100%" class="table table-striped text-center">
+							<thead>
+								<tr>
+								<th width="10%">#</th>
+								<th width="30%">نام فایل</th>
+								<th width="15%">وضعیت</th>
+								<th width="35%">نظر مدیر</th>
+								<th width="10%">عملیات</th>
+							</tr>
+							</thead>
+							<tbody style="font-size: 11px;">
+								<?php
+									if($all_documents === -1)
+										echo "<tr><td colspan='5'>هیچ کاربری موجود نیست</td></tr>";
+									else
+									{
+										$i = 1;
+										foreach ($all_documents as $document) {
+											if($document['status'] == 1)
+												$document['status'] = "آپلود اولیه";
+											elseif($document['status'] == 2)
+												$document['status'] = "بررسی شده";
+
+											if(empty($document['admin_review']))
+												$document['admin_review'] = "هنوز نظری نسبت به این سند وارد نشده است.";
+
+											echo "<tr><td>" . $i . "</td><td>" . $document['file_name'] . "</td><td>" . $document['status'] . "</td><td>" . $document['admin_review'] . "</td><td><a target='_blank' href='upload/" . $document['file_name'] . "' class='text-primary' title='مشاهده سند'>☼</a></td></tr>";
+											$i++;
+										}
+									}
+								?>
+							</tbody>
+						</table>
 					</div>
 				</div>
 				<div class="clearfix"></div>

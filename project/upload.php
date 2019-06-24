@@ -29,6 +29,31 @@
 	}
 	else
 		$type = "اساتید";
+
+	$error = -1;
+	$success = -1;
+	if (!empty($_FILES['file'])) {
+		if($_FILES["file"]["size"] < 8388608)
+	    {
+	    	if ($_FILES["file"]["error"] > 0)
+	        $error = "عملیات ناموفق";
+		    else
+		    {
+		        if (file_exists("upload/" . $_FILES["file"]["name"])){
+		             $error = "فایل تکراری است";
+		        }else{
+		            move_uploaded_file($_FILES["file"]["tmp_name"],
+		            "upload/" . $_FILES["file"]["name"]);
+		            insert_document($_SESSION['user_id'], $_FILES["file"]["name"], $_FILES["file"]["type"]);
+		            $success = "عملیات موفق";
+		        }
+		    }
+	    }
+	    else
+	    	$error = "عملیات ناموفق";
+	}
+	
+
 ?>
 
 <body style="background: url(assets/img/<?php echo $background; ?>) no-repeat center; background-size: cover; background-attachment: fixed;">
@@ -71,6 +96,20 @@
 					</div>
 					<div class="float-left col-8 mypanel-content bg-light text-right">
 						<h2>آپلود مدارک</h2>
+						<form action="" method="post" enctype="multipart/form-data" class="form-group">
+							<label for="file">فایلی را برای آپلود انتخاب کنید.</label>
+							<input type="file" name="file"  class="form-control" id="file" />
+							<br />
+							<input type="submit" name="submit" value="ثبت" class="btn btn-success float-left" />
+							<br />
+							<div class="clearfix"></div>
+						</form>
+						<?php
+							if($error !== -1)
+								echo '<p class="alert alert-danger text-right">' . $error . '</p>';
+							if($success !== -1)
+								echo '<p class="alert alert-success text-right">' . $success . '</p>';
+						?>
 					</div>
 				</div>
 				<div class="clearfix"></div>
